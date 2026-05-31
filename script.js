@@ -559,6 +559,8 @@ distanceBtn.addEventListener("click", () => {
 
     measureMode = "distance";
 
+    disableFeatureInteraction();   // 👈 ADD THIS
+
     distanceBtn.classList.add("measure-active");
 });
 
@@ -567,6 +569,8 @@ areaBtn.addEventListener("click", () => {
     resetMeasureButtons();
 
     measureMode = "area";
+
+    disableFeatureInteraction();   // 👈 ADD THIS
 
     areaBtn.classList.add("measure-active");
 });
@@ -683,6 +687,9 @@ function clearMeasurements() {
 
     resetMeasureButtons();
 
+    // ✅ RESTORE FEATURE INTERACTION AFTER MEASURE MODE
+    enableFeatureInteraction();
+
     distancePoints = [];
     areaPoints = [];
 
@@ -784,4 +791,52 @@ function selectFeature(index, feature) {
     }
 
     highlight(feature);
+}
+
+/* =========================================================
+   DISABLE FEATURE SELECTION WHEN MEASURING
+========================================================= */
+
+function disableFeatureInteraction() {
+
+    if (!geoLayer) return;
+
+    geoLayer.eachLayer(layer => {
+        if (layer.getElement) {
+            const el = layer.getElement();
+            if (el) el.style.pointerEvents = "none";
+        }
+
+        // also disable tooltip click interference
+        layer.off("click");
+    });
+}
+
+function enableFeatureInteraction() {
+
+    if (!geoLayer) return;
+
+    geoLayer.eachLayer(layer => {
+
+        if (layer.getElement) {
+            const el = layer.getElement();
+            if (el) el.style.pointerEvents = "auto";
+        }
+
+        // rebind click again safely
+        layer.off("click"); // avoid duplicates
+
+        layer.on("click", () => {
+
+            const i = filteredData.findIndex(r => r === layer.feature.properties);
+
+            const feature = {
+                type: "Feature",
+                geometry: layer.feature.geometry,
+                properties: layer.feature.properties
+            };
+
+            selectFeature(i, feature);
+        });
+    });
 }
