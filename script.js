@@ -485,7 +485,7 @@ function renderTable(data) {
 
     table.innerHTML = html;
 
-    addRowClick();
+  
 }
 
 
@@ -493,31 +493,38 @@ function renderTable(data) {
    ROW CLICK
 ========================================================= */
 
-function addRowClick() {
+document.getElementById("table").addEventListener("click", function (e) {
 
-    document.querySelectorAll(".table-row").forEach(row => {
+    const row = e.target.closest(".table-row");
+    if (!row) return;
 
-        row.addEventListener("click", function () {
+    const i = parseInt(row.getAttribute("data-i"));
+    const f = filteredData[i];
 
-            const i = parseInt(this.getAttribute("data-i"));
-            const f = filteredData[i];
-
-            const feature = {
-                type: "Feature",
-                geometry: parseGeom(f.geom),
-                properties: f
-            };
-
-            selectFeature(i, feature);
-
-            // zoom to feature
-            try {
-                const layer = L.geoJSON(feature);
-                map.fitBounds(layer.getBounds());
-            } catch (e) {}
-        });
+    // remove old selection
+    document.querySelectorAll(".table-row").forEach(r => {
+        r.classList.remove("selected");
     });
-}
+
+    // select new row
+    row.classList.add("selected");
+
+    // scroll (fast mode)
+    row.scrollIntoView({
+        block: "center",
+        behavior: "auto"
+    });
+
+    const feature = {
+        type: "Feature",
+        geometry: parseGeom(f.geom),
+        properties: f
+    };
+
+    requestAnimationFrame(() => {
+        highlight(feature);
+    });
+});
 
 
 /* =========================================================
@@ -771,7 +778,7 @@ function selectFeature(index, feature) {
 
         // ✅ SCROLL TO ROW 
         row.scrollIntoView({
-            behavior: "smooth",
+            behavior: "auto",
             block: "center"
         });
     }
