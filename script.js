@@ -154,10 +154,17 @@ function loadColumns(data) {
     col.innerHTML = "";
 
     Object.keys(data[0]).forEach(k => {
+
         if (k !== "geom") {
+
             let opt = document.createElement("option");
+
             opt.value = k;
-            opt.textContent = k;
+
+            opt.textContent = k
+                .replace(/_/g, " ")
+                .toUpperCase();
+
             col.appendChild(opt);
         }
     });
