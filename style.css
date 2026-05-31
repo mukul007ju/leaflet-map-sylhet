@@ -1,0 +1,262 @@
+
+/* =========================================================
+   DASHBOARD GRID SYSTEM
+========================================================= */
+
+.dashboard {
+    display: grid;
+    grid-template-columns: 260px 1fr 260px;
+    grid-template-rows: 60px 1fr 250px;
+    grid-template-areas:
+        "header header header"
+        "left map right"
+        "table table table";
+    height: 100vh;
+    gap: 5px;
+}
+
+
+/* =========================================================
+   HEADER SECTION
+========================================================= */
+
+/* HEADER FLEX STRUCTURE */
+.header {
+    grid-area: header;
+    background: #111;
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 15px;
+}
+
+/* HEADER TITLE LEFT */
+.header-title {
+    flex: 1;
+}
+
+/* HEADER SEARCH CENTER */
+.header-search {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+/* HEADER ACTIONS RIGHT */
+.header-actions {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* SEARCH INPUT WIDTH CONTROL */
+.header-search input {
+    width: 100%;
+    max-width: 300px;
+}
+
+/* (Duplicate kept from original - no change) */
+.header-search {
+    width: 280px;
+}
+
+
+/* =========================================================
+   LEFT PANEL
+========================================================= */
+
+.leftPanel {
+    grid-area: left;
+    overflow: auto;
+    padding: 5px;
+}
+
+
+/* =========================================================
+   MAP SECTION
+========================================================= */
+
+.mapContainer {
+    grid-area: map;
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+}
+
+
+/* =========================================================
+   RIGHT PANEL
+========================================================= */
+
+.rightPanel {
+    grid-area: right;
+    overflow: auto;
+    padding: 5px;
+}
+
+
+/* =========================================================
+   TABLE SECTION
+========================================================= */
+
+.tableContainer {
+    grid-area: table;
+    overflow: auto;
+    background: white;
+}
+
+/* Make table container scrollable */
+.tableContainer {
+    overflow: auto;
+}
+
+
+/* =========================================================
+   TABLE STYLING
+========================================================= */
+
+/* Sticky table header */
+#table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #212529;
+    color: white;
+}
+
+/* Table row hover effect */
+.table-row:hover {
+    background: #f2f2f2;
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   LEGEND / UI ELEMENTS
+========================================================= */
+
+.box {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-right: 6px;
+}
+
+.blue {
+    background: blue;
+}
+
+.red {
+    background: red;
+}
+
+
+/* =========================================================
+   OVERVIEW MAP
+========================================================= */
+
+#overviewMap {
+    height: 180px;
+    width: 100%;
+    border: 1px solid #ccc;
+}
+
+
+/* =========================================================
+   FEATURE INFO PANEL
+========================================================= */
+
+#featureInfo {
+    font-size: 13px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+/* Feature info rows */
+#featureInfo div {
+    border-bottom: 1px solid #eee;
+    padding: 2px 0;
+}
+
+
+/* =========================================================
+   MOUSE COORDINATES
+========================================================= */
+
+#mouseCoords {
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   MEASUREMENT TOOL
+========================================================= */
+
+.measure-box {
+    background: #f5f5f5;
+    border-radius: 6px;
+    padding: 8px;
+    font-size: 13px;
+}
+
+/* Active measurement button */
+.measure-active {
+    border: 2px solid #000 !important;
+}
+
+
+/* =========================================================
+   ZONE LABELS
+========================================================= */
+
+.zone-label {
+    background: rgba(0, 0, 0, 0.65);
+    color: #fff;
+
+    width: 22px;
+    height: 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    padding: 0;
+
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   RESPONSIVE DESIGN
+========================================================= */
+
+@media (max-width: 992px) {
+
+    .dashboard {
+        grid-template-columns: 1fr;
+        grid-template-rows: 60px auto 400px auto 250px;
+        grid-template-areas:
+            "header"
+            "left"
+            "map"
+            "right"
+            "table";
+    }
+
+    .rightPanel {
+        order: 3;
+    }
+}

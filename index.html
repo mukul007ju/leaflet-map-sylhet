@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>GIS Dashboard</title>
+
+    <!-- ===================== CSS LIBRARIES ===================== -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <!-- ===================== CUSTOM STYLES ===================== -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- ===========================================================
+     MAIN DASHBOARD WRAPPER
+=========================================================== -->
+<div class="dashboard">
+
+    <!-- =======================================================
+         HEADER SECTION
+    ======================================================= -->
+    <div class="header shadow">
+
+        <!-- ================= TITLE (LEFT) ================= -->
+        <div class="header-title">
+            <h5>Failaka Island Master Plan 2025</h5>
+        </div>
+
+        <!-- ================= SEARCH (CENTER) ================= -->
+        <div class="header-search">
+            <input id="locationSearch"
+                   class="form-control form-control-sm"
+                   placeholder="Search location">
+        </div>
+
+        <!-- ================= RESET BUTTON (RIGHT) ================= -->
+        <div class="header-actions">
+            <button id="resetMapBtn"
+                    class="btn btn-light btn-sm">
+                Reset Map
+            </button>
+        </div>
+
+    </div>
+    <!-- END HEADER -->
+
+
+    <!-- =======================================================
+         LEFT PANEL (TOOLS + LEGEND + OVERVIEW + COORDS)
+    ======================================================= -->
+    <div class="leftPanel">
+
+        <!-- ================= QUERY TOOL ================= -->
+        <div class="card p-2 mb-2">
+            <h6>Query Tool</h6>
+
+            <select id="columnSelect" class="form-select form-select-sm mb-2"></select>
+
+            <input id="searchBox"
+                   class="form-control form-control-sm mb-2"
+                   placeholder="Search">
+
+            <button id="queryBtn"
+                    class="btn btn-primary btn-sm w-100">
+                Search
+            </button>
+        </div>
+
+
+        <!-- ================= LEGEND ================= -->
+        <div class="card p-2">
+            <h6>Legend</h6>
+
+            <div><span class="box blue"></span> Features</div>
+            <div><span class="box red"></span> Selected</div>
+        </div>
+
+
+        <!-- ================= OVERVIEW MAP ================= -->
+        <div class="card p-2 mt-2">
+            <h6>Overview Map</h6>
+            <div id="overviewMap"></div>
+        </div>
+
+
+        <!-- ================= MOUSE COORDINATES ================= -->
+        <div class="card p-2 mt-2">
+            <h6>Mouse Coordinates</h6>
+
+            <div id="mouseCoords">
+                Lat: -- <br>
+                Lon: --
+            </div>
+        </div>
+
+    </div>
+    <!-- END LEFT PANEL -->
+
+
+    <!-- =======================================================
+         MAP CONTAINER
+    ======================================================= -->
+    <div class="mapContainer">
+        <div id="map"></div>
+    </div>
+
+
+    <!-- =======================================================
+         RIGHT PANEL (INFO + FEATURE + MEASURE)
+    ======================================================= -->
+    <div class="rightPanel">
+
+        <!-- ================= DASHBOARD INFO ================= -->
+        <div class="card p-2 mb-2">
+            <h6>Map Dashboard</h6>
+        </div>
+
+
+        <!-- ================= SELECTED FEATURE INFO ================= -->
+        <div class="card p-2 mb-2">
+            <h6>Selected Feature</h6>
+
+            <div id="featureInfo">
+                Click feature on map
+            </div>
+        </div>
+
+
+        <!-- ================= MEASUREMENT TOOL ================= -->
+        <div class="card p-2">
+
+            <h6>Measurement Tools</h6>
+
+            <!-- DISTANCE -->
+            <button id="distanceBtn"
+                    class="btn btn-primary btn-sm w-100 mb-2">
+                Measure Distance
+            </button>
+
+            <!-- AREA -->
+            <button id="areaBtn"
+                    class="btn btn-success btn-sm w-100 mb-2">
+                Measure Area
+            </button>
+
+            <!-- CLEAR -->
+            <button id="clearMeasureBtn"
+                    class="btn btn-danger btn-sm w-100 mb-3">
+                Clear Measurement
+            </button>
+
+            <!-- RESULTS -->
+            <div id="measureResult">
+
+                <div class="measure-box">
+                    <b>Distance:</b><br>
+                    0 m
+                </div>
+
+                <div class="measure-box mt-2">
+                    <b>Area:</b><br>
+                    0 sqm
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <!-- END RIGHT PANEL -->
+
+
+    <!-- =======================================================
+         ATTRIBUTE TABLE SECTION
+    ======================================================= -->
+    <div class="tableContainer">
+        <table id="table"
+               class="table table-sm table-striped table-bordered">
+        </table>
+    </div>
+
+</div>
+<!-- END DASHBOARD -->
+
+
+<!-- ===========================================================
+     JAVASCRIPT LIBRARIES
+=========================================================== -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<!-- ===================== MAIN SCRIPT ===================== -->
+<script src="script.js"></script>
+
+</body>
+</html>
