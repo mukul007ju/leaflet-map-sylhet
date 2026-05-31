@@ -714,3 +714,19 @@ function clearHighlight() {
     }
     document.getElementById("featureInfo").innerHTML = "";
 }
+
+/* =========================================================
+   DISABLE RIGHTCLICK
+========================================================= */
+
+function clearHighlight() {
+    if (highlightLayer) {
+        map.removeLayer(highlightLayer);
+        highlightLayer = null;
+    }
+    document.getElementById("featureInfo").innerHTML = "";
+	
+	document.addEventListener("contextmenu", function (e) {
+    e.preventDefault();
+});
+}
