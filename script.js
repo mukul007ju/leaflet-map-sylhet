@@ -142,6 +142,25 @@ async function loadData() {
 
 loadData();
 
+/* =========================================================
+   FEATURE COUNT (QUERY TOOL)
+========================================================= */
+
+function updateFeatureCount(selected, total) {
+
+    const el = document.getElementById("featureCount");
+
+    if (!el) {
+        console.log("featureCount div NOT found");
+        return;
+    }
+
+    el.innerHTML = `${selected} Selected of ${total} Features`;
+
+    console.log("Counter updated:", selected, total);
+}
+
+
 
 /* =========================================================
    COLUMN LOADING (QUERY TOOL)
@@ -184,8 +203,18 @@ document.getElementById("queryBtn").addEventListener("click", function () {
         r[column] && r[column].toString().toLowerCase().includes(value.toLowerCase())
     );
 
+    // CLEAR OLD SELECTION 
+    if (highlightLayer) {
+        map.removeLayer(highlightLayer);
+        highlightLayer = null;
+    }
+
+    document.getElementById("featureInfo").innerHTML = "";
+
     renderMap(filteredData);
     renderTable(filteredData);
+
+    updateFeatureCount(filteredData.length, allData.length);
 });
 
 
@@ -469,6 +498,7 @@ function addRowClick() {
             });
         });
     });
+	clearHighlight();
 }
 
 
@@ -670,3 +700,17 @@ function resetMapView() {
 
 document.getElementById("resetMapBtn")
 .addEventListener("click", resetMapView);
+
+clearHighlight();
+
+/* =========================================================
+   CLEAR HIGHLIGHT
+========================================================= */
+
+function clearHighlight() {
+    if (highlightLayer) {
+        map.removeLayer(highlightLayer);
+        highlightLayer = null;
+    }
+    document.getElementById("featureInfo").innerHTML = "";
+}

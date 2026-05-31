@@ -270,3 +270,15 @@
         order: 3;
     }
 }
+
+/* =========================================================
+   FEATURE COUNT DURING QUERY
+========================================================= */
+
+#featureCount{
+    font-size:14px;
+    padding-top:4px;
+    color:#333;
+    font-weight:600;
+    line-height:1.2;
+}
