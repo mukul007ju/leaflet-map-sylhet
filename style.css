@@ -282,3 +282,17 @@
     font-weight:600;
     line-height:1.2;
 }
+
+/* =========================================================
+   TABLE ROW HIGHLIGHT
+========================================================= */
+
+.table tbody tr.table-row.selected {
+    background-color: #cfe8ff !important;
+    color: #000 !important;
+}
+
+.table tbody tr.table-row.selected td {
+    background-color: #cfe8ff !important;
+    color: #000 !important;
+}

@@ -243,7 +243,18 @@ function renderMap(data) {
 
         onEachFeature: (f, layer) => {
 
-            layer.on("click", () => highlight(f));
+            layer.on("click", () => {
+
+    const i = filteredData.findIndex(r => r === f.properties);
+
+    const feature = {
+        type: "Feature",
+        geometry: f.geometry,
+        properties: f.properties
+    };
+
+    selectFeature(i, feature);
+});
 
 if (f.properties && f.properties.plot) {
 
@@ -488,17 +499,24 @@ function addRowClick() {
 
         row.addEventListener("click", function () {
 
-            const i = this.getAttribute("data-i");
+            const i = parseInt(this.getAttribute("data-i"));
             const f = filteredData[i];
 
-            highlight({
+            const feature = {
                 type: "Feature",
                 geometry: parseGeom(f.geom),
                 properties: f
-            });
+            };
+
+            selectFeature(i, feature);
+
+            // zoom to feature
+            try {
+                const layer = L.geoJSON(feature);
+                map.fitBounds(layer.getBounds());
+            } catch (e) {}
         });
     });
-	clearHighlight();
 }
 
 
@@ -729,4 +747,33 @@ function clearHighlight() {
 	document.addEventListener("contextmenu", function (e) {
     e.preventDefault();
 });
+}
+
+/* =========================================================
+   SELECT FEATURE AND HIGHLIGHT IN ROW
+========================================================= */
+
+let selectedRowIndex = null;
+
+function selectFeature(index, feature) {
+
+    selectedRowIndex = index;
+
+    // 1. Highlight table row
+    document.querySelectorAll(".table-row").forEach(r => {
+        r.classList.remove("selected");
+    });
+
+    const row = document.querySelector(`.table-row[data-i="${index}"]`);
+
+    if (row) {
+        row.classList.add("selected");
+
+        // 👉 MOVE ROW TO TOP
+        const tbody = row.parentNode;
+        tbody.insertBefore(row, tbody.firstChild);
+    }
+
+    // 2. Highlight map feature
+    highlight(feature);
 }
