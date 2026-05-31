@@ -759,7 +759,7 @@ function selectFeature(index, feature) {
 
     selectedRowIndex = index;
 
-    // 1. Highlight table row
+    // clear previous selection
     document.querySelectorAll(".table-row").forEach(r => {
         r.classList.remove("selected");
     });
@@ -769,11 +769,12 @@ function selectFeature(index, feature) {
     if (row) {
         row.classList.add("selected");
 
-        // 👉 MOVE ROW TO TOP
-        const tbody = row.parentNode;
-        tbody.insertBefore(row, tbody.firstChild);
+        // ✅ SCROLL TO ROW 
+        row.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
     }
 
-    // 2. Highlight map feature
     highlight(feature);
 }
