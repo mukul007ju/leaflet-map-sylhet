@@ -11,6 +11,15 @@
 
     <!-- ===================== CUSTOM STYLES ===================== -->
     <link rel="stylesheet" href="style.css">
+	
+	<!-- PDF EXPORT LIBRARIES -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://unpkg.com/leaflet-image/leaflet-image.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
+
 </head>
 
 <body>
@@ -38,12 +47,17 @@
         </div>
 
         <!-- ================= RESET BUTTON (RIGHT) ================= -->
-        <div class="header-actions">
-            <button id="resetMapBtn"
-                    class="btn btn-light btn-sm">
-                Reset Map
-            </button>
-        </div>
+<div class="header-actions">
+
+    <button id="exportTablePdfBtn" class="btn btn-success btn-sm">
+        Export Table
+    </button>
+
+    <button id="resetMapBtn" class="btn btn-danger btn-sm">
+        Reset Map
+    </button>
+
+</div>
 
     </div>
     <!-- END HEADER -->
@@ -55,36 +69,69 @@
     <div class="leftPanel">
 
         <!-- ================= QUERY TOOL ================= -->
-        <div class="card p-2 mb-2">
-            <h6>Query Tool</h6>
+		<div class="card p-2 mb-2">
+            <h6>Spatial Query Tool</h6>
+        </div>
+<div class="row g-1">
 
-            <select id="columnSelect" class="form-select form-select-sm mb-2"></select>
+    <div class="col-5">
+        <select id="columnSelect" class="form-select form-select-sm"></select>
+    </div>
 
-            <input id="searchBox"
-                   class="form-control form-control-sm mb-2"
-                   placeholder="Search">
+    <div class="col-3">
+        <select id="operatorSelect" class="form-select form-select-sm">
+            <option value="contains">Operators</option>
+            <option value="=">=</option>
+            <option value="!=">!=</option>
+            <option value=">">></option>
+            <option value="<"><</option>
+            <option value=">=">>=</option>
+            <option value="<="><=</option>
+        </select>
+    </div>
 
-            <button id="queryBtn"
-                    class="btn btn-primary btn-sm w-100">
-                Search
-            </button>
+    <div class="col-4">
+        <input id="searchBox"
+               class="form-control form-control-sm"
+               placeholder="Value">
+    </div>
+
+</div>
+
+<div class="d-grid gap-1 mt-1">
+
+    <button id="addQueryBtn"
+            class="btn btn-secondary btn-sm">
+        Add Condition
+    </button>
+
+    <button id="runQueryBtn"
+            class="btn btn-primary btn-sm">
+        Run Query
+    </button>
+
+    <button id="clearQueryBtn"
+            class="btn btn-danger btn-sm">
+        Clear Query
+    </button>
+
+</div>
+
+ <div class="card p-2">
+            <div id="activeQueries">SQL</div>
+
         </div>
 
 
+
         <!-- ================= LEGEND ================= -->
-        <div class="card p-2">
+        <div class="card p-2 mt-2">
             <h6>Legend</h6>
 
             <div><span class="box blue"></span> Features</div>
             <div><span class="box red"></span> Selected</div>
         </div>
 
-
-        <!-- ================= OVERVIEW MAP ================= -->
-        <div class="card p-2 mt-2">
-           <h6>Overview Map</h6> 
-            <div id="overviewMap"></div>
-        </div>
 
 
         <!-- ================= MOUSE COORDINATES ================= -->
@@ -99,9 +146,16 @@
 			0 Selected of 0 Features
 			</div>
         </div>
+
+
+
+        <!-- ================= OVERVIEW MAP ================= -->
+        <div class="card p-2 mt-2">
+           <h6>Overview Map</h6> 
+            <div id="overviewMap"></div>
+        </div>
+
 		
-
-
     </div>
     <!-- END LEFT PANEL -->
 

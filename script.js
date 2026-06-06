@@ -33,6 +33,7 @@ let initialBounds = null;
 let initialData = [];
 
 let usedLabelPositions = [];
+let queryConditions = [];
 
 
 /* =========================================================
@@ -190,32 +191,143 @@ function loadColumns(data) {
 }
 
 
+
+
 /* =========================================================
-   QUERY TOOL
+   ADVANCED QUERY BUILDER
 ========================================================= */
 
-document.getElementById("queryBtn").addEventListener("click", function () {
+document.getElementById("addQueryBtn")
+.addEventListener("click", function () {
 
-    const column = document.getElementById("columnSelect").value;
-    const value = document.getElementById("searchBox").value;
+    const column =
+        document.getElementById("columnSelect").value;
 
-    filteredData = allData.filter(r =>
-        r[column] && r[column].toString().toLowerCase().includes(value.toLowerCase())
-    );
+    const operator =
+        document.getElementById("operatorSelect").value;
 
-    // CLEAR OLD SELECTION 
-    if (highlightLayer) {
-        map.removeLayer(highlightLayer);
-        highlightLayer = null;
+    const value =
+        document.getElementById("searchBox").value.trim();
+
+    if (!value) {
+        alert("Enter a value");
+        return;
     }
 
-    document.getElementById("featureInfo").innerHTML = "";
+    queryConditions.push({
+        column,
+        operator,
+        value
+    });
+
+    displayQueryConditions();
+
+    document.getElementById("searchBox").value = "";
+});
+
+
+document.getElementById("runQueryBtn")
+.addEventListener("click", function () {
+
+    filteredData = allData.filter(row => {
+
+        return queryConditions.every(cond => {
+
+            const val = row[cond.column];
+
+            if (val === null || val === undefined)
+                return false;
+
+            switch (cond.operator) {
+
+                case "=":
+                    return String(val).toLowerCase() ===
+                        cond.value.toLowerCase();
+
+                case "!=":
+                    return String(val).toLowerCase() !==
+                        cond.value.toLowerCase();
+
+                case ">":
+                    return Number(val) >
+                        Number(cond.value);
+
+                case "<":
+                    return Number(val) <
+                        Number(cond.value);
+
+                case ">=":
+                    return Number(val) >=
+                        Number(cond.value);
+
+                case "<=":
+                    return Number(val) <=
+                        Number(cond.value);
+
+                case "contains":
+                default:
+                    return String(val)
+                        .toLowerCase()
+                        .includes(cond.value.toLowerCase());
+            }
+        });
+    });
+
+    clearHighlight();
 
     renderMap(filteredData);
     renderTable(filteredData);
 
-    updateFeatureCount(filteredData.length, allData.length);
+    updateFeatureCount(
+        filteredData.length,
+        allData.length
+    );
 });
+
+
+document.getElementById("clearQueryBtn")
+.addEventListener("click", function () {
+
+    queryConditions = [];
+
+    filteredData = [...allData];
+
+    renderMap(filteredData);
+    renderTable(filteredData);
+
+    updateFeatureCount(
+        filteredData.length,
+        allData.length
+    );
+
+    document.getElementById("activeQueries").innerHTML = "";
+
+    document.getElementById("searchBox").value = "";
+});
+
+
+function displayQueryConditions() {
+
+    const div =
+        document.getElementById("activeQueries");
+
+    if (!div) return;
+
+    let html = "";
+
+    queryConditions.forEach((q, i) => {
+
+        html += `
+        <div>
+            ${i + 1}.
+            ${q.column}
+            ${q.operator}
+            ${q.value}
+        </div>`;
+    });
+
+    div.innerHTML = html;
+}
 
 
 /* =========================================================
@@ -711,6 +823,15 @@ function clearMeasurements() {
 function resetMapView() {
 
     filteredData = initialData;
+	
+	queryConditions = [];
+
+const activeQueries =
+    document.getElementById("activeQueries");
+
+if (activeQueries) {
+    activeQueries.innerHTML = "";
+}
 
     renderMap(initialData);
     renderTable(initialData);
@@ -840,3 +961,186 @@ function enableFeatureInteraction() {
         });
     });
 }
+
+
+/* =========================================================
+   EXPORT TABLE (PROFESSIONAL PDF)
+========================================================= */
+
+document.getElementById("exportTablePdfBtn")
+.addEventListener("click", function () {
+
+    const { jsPDF } = window.jspdf;
+
+    const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "mm",
+        format: "a4"
+    });
+
+    /* =========================================================
+       QUERY TITLE
+    ========================================================= */
+
+    let queryTitle = "All Features";
+
+    if (queryConditions && queryConditions.length > 0) {
+
+        queryTitle = queryConditions
+            .map(q => `${q.column} ${q.operator} ${q.value}`)
+            .join(" AND ");
+    }
+
+    /* =========================================================
+       PREPARE DATA
+    ========================================================= */
+
+    const cleanData = filteredData.map(row => {
+
+        const obj = {};
+
+        Object.keys(row).forEach(key => {
+
+            if (key === "geom") return;
+
+            let value = row[key];
+
+            // limit decimals to 3
+            if (
+                typeof value === "number" &&
+                !Number.isInteger(value)
+            ) {
+                value = Number(value).toFixed(3);
+            }
+
+            obj[key.toUpperCase()] = value;
+        });
+
+        return obj;
+    });
+
+    if (cleanData.length === 0) {
+
+        alert("No records found.");
+
+        return;
+    }
+
+    const columns = Object.keys(cleanData[0]);
+
+    const rows = cleanData.map(row =>
+        columns.map(col => row[col] ?? "")
+    );
+
+    /* =========================================================
+       TABLE
+    ========================================================= */
+
+    pdf.autoTable({
+
+        head: [columns],
+
+        body: rows,
+
+        startY: 32,
+
+        margin: {
+            top: 30,
+            left: 8,
+            right: 8,
+            bottom: 12
+        },
+
+        theme: "grid",
+
+        styles: {
+            fontSize: 7,
+            cellPadding: 1.8,
+            overflow: "linebreak",
+            valign: "middle",
+            textColor: [0, 0, 0]
+        },
+
+        headStyles: {
+            fillColor: [33, 37, 41],
+            textColor: [255, 255, 255],
+            fontStyle: "bold",
+            halign: "center",
+            valign: "middle",
+            fontSize: 7
+        },
+
+        alternateRowStyles: {
+            fillColor: [245, 245, 245]
+        },
+
+        didDrawPage: function (data) {
+
+            const pageWidth =
+                pdf.internal.pageSize.getWidth();
+
+            const pageHeight =
+                pdf.internal.pageSize.getHeight();
+
+            /* ===============================
+               HEADER
+            =============================== */
+
+            pdf.setFont("helvetica", "bold");
+            pdf.setFontSize(13);
+
+            pdf.text(
+                "ATTRIBUTE QUERY RESULT",
+                10,
+                10
+            );
+
+            pdf.setFont("helvetica", "normal");
+            pdf.setFontSize(8);
+
+            pdf.text(
+                `QUERY: ${queryTitle}`,
+                10,
+                16
+            );
+
+            pdf.text(
+                `TOTAL FEATURES: ${cleanData.length}`,
+                10,
+                21
+            );
+
+            pdf.line(
+                10,
+                24,
+                pageWidth - 10,
+                24
+            );
+
+            /* ===============================
+               FOOTER
+            =============================== */
+
+            pdf.setFontSize(8);
+
+            pdf.text(
+                `PAGE ${data.pageNumber}`,
+                pageWidth - 25,
+                pageHeight - 6
+            );
+
+            pdf.text(
+                new Date().toLocaleDateString(),
+                10,
+                pageHeight - 6
+            );
+        }
+    });
+
+    /* =========================================================
+       SAVE PDF
+    ========================================================= */
+
+    pdf.save("attribute_table.pdf");
+
+});

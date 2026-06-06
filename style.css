@@ -296,3 +296,72 @@
     background-color: #cfe8ff !important;
     color: #000 !important;
 }
+
+
+/* =========================================================
+   ADVANCED QUERY BUILDER
+========================================================= */
+
+#operatorSelect,
+#columnSelect,
+#searchBox {
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+#addQueryBtn,
+#runQueryBtn,
+#clearQueryBtn {
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+#activeQueries {
+    margin-top: 8px;
+    max-height: 120px;
+    overflow-y: auto;
+
+    border: 1px solid #ddd;
+    border-radius: 4px;
+
+    background: #fafafa;
+
+    padding: 6px;
+    font-size: 12px;
+}
+
+#activeQueries div {
+    padding: 3px 0;
+    border-bottom: 1px solid #eee;
+}
+
+#activeQueries div:last-child {
+    border-bottom: none;
+}
+/* =========================================================
+   QUERY TOOL ALIGNMENT
+========================================================= */
+
+#columnSelect,
+#operatorSelect,
+#searchBox {
+    height: 31px;
+    font-size: 13px;
+}
+
+#searchBox::placeholder {
+    font-size: 13px;
+    color: #6c757d;
+    opacity: 1;
+}
+#table {
+    font-size: 11px;
+}
+
+.header-actions button {
+    margin-left: 8px;
+}
+
+.header-actions button:first-child {
+    margin-left: 0;
+}
