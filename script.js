@@ -108,7 +108,7 @@ const overviewMap = L.map("overviewMap", {
 }).setView([47.8, 13.04], 8);
 
 L.tileLayer(
-    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    "https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
 ).addTo(overviewMap);
 
 let overviewRect;
